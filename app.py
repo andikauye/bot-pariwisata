@@ -15,6 +15,7 @@ connection = pymysql.connect(host='db4free.net',
 def root():
     data = request.get_json()
     intent = data['queryResult']['intent']['displayName']
+    print(data)
 
     if intent == "Nama":
         daftar_nama(data)
@@ -55,11 +56,15 @@ def daftar_nama(data):
 
         connection.commit()
 
-        return jsonify({'fulfillmentText': respon})
     except Exception as error:
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
-        return jsonify({'fulfillmentText': respon})
+
+    response = {
+        "fulfillmentText": respon
+    }
+
+    return jsonify(response)
 
 
 def daftar_umur(data):
@@ -85,11 +90,15 @@ def daftar_umur(data):
 
         connection.commit()
 
-        return jsonify({'fulfillmentText': respon})
     except Exception as error:
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
-        return jsonify({'fulfillmentText': respon})
+
+    response = {
+        "fulfillmentText": respon
+    }
+
+    return jsonify(response)
 
 
 def daftar_jenis_kelamin(data):
@@ -115,11 +124,15 @@ def daftar_jenis_kelamin(data):
 
         connection.commit()
 
-        return jsonify({'fulfillmentText': respon})
     except Exception as error:
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
-        return jsonify({'fulfillmentText': respon})
+
+    response = {
+        "fulfillmentText": respon
+    }
+
+    return jsonify(response)
 
 
 def daftar_alamat(data):
@@ -145,11 +158,15 @@ def daftar_alamat(data):
 
         connection.commit()
 
-        return jsonify({'fulfillmentText': respon})
     except Exception as error:
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
-        return jsonify({'fulfillmentText': respon})
+
+    response = {
+        "fulfillmentText": respon
+    }
+
+    return jsonify(response)
 
 
 def daftar_no_telepon(data):
@@ -189,15 +206,20 @@ def daftar_no_telepon(data):
 
         connection.commit()
 
-        return jsonify({'fulfillmentText': respon})
     except Exception as error:
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
-        return jsonify({'fulfillmentText': respon})
+
+    response = {
+        "fulfillmentText": respon
+    }
+
+    return jsonify(response)
 
 
 def daftar_destinasi(data):
     print(data)
+    return jsonify({"fulfillmenText": "Destinasi"})
 
 
 if __name__ == "__main__":
