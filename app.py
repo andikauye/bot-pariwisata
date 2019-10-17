@@ -29,6 +29,8 @@ def root():
     elif intent == "destinasi":
         daftar_destinasi(data)
 
+    return jsonify({'fulfillmentText': 'Mohon ulangi kembali'})
+
 
 def daftar_nama(data):
     id_user = data['originalDetectIntentRequest']['payload']['data']['source']['userId']
