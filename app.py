@@ -18,17 +18,17 @@ def root():
     print(data)
 
     if intent == "Nama":
-        daftar_nama(data)
+        return daftar_nama(data)
     elif intent == "umur":
-        daftar_umur(data)
+        return daftar_umur(data)
     elif intent == "jenis kelamin":
-        daftar_jenis_kelamin(data)
+        return daftar_jenis_kelamin(data)
     elif intent == "alamat":
-        daftar_alamat(data)
+        return daftar_alamat(data)
     elif intent == "no telepon":
-        daftar_no_telepon(data)
+        return daftar_no_telepon(data)
     elif intent == "destinasi":
-        daftar_destinasi(data)
+        return daftar_destinasi(data)
 
     return jsonify({"fulfillmentText": "Mohon ulangi lagi"})
 
@@ -63,8 +63,6 @@ def daftar_nama(data):
     response = {
         "fulfillmentText": respon
     }
-
-    print(response)
 
     return jsonify(response)
 
