@@ -29,7 +29,7 @@ def root():
     elif intent == "destinasi":
         daftar_destinasi(data)
 
-    return jsonify({'fulfillmentText': 'Mohon ulangi kembali'})
+    return
 
 
 def daftar_nama(data):
