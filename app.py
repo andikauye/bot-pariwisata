@@ -218,8 +218,48 @@ def daftar_no_telepon(data):
 
 
 def daftar_destinasi(data):
-    print(data)
-    return jsonify({"fulfillmenText": "Destinasi"})
+    id_user = data['originalDetectIntentRequest']['payload']['data']['source']['userId']
+    id_chat = data['originalDetectIntentRequest']['payload']['data']['message']['id']
+    pesan = data['queryResult']['queryText']
+    id_inbox = ""
+    parameters = data['queryResult']['outputContexts'][0]['parameters']
+    nama = parameters['nama']
+    umur = parameters['umur']
+    jenis_kelamin = parameters['jeniskelamin']
+    alamat = parameters['alamat']
+    no_telepon = parameters['notelepon']
+    destinasi = parameters['destinasi']
+
+    try:
+        respon = "Data Tersimpan.\nTunggu Tour Guide Menghubungi Anda.\n\n" \
+                 "Ketik \"Wisata\" untuk Melihat Tempat Wisata Lainnya"
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO tb_inbox (id_user, id_chat, pesan, tanggal) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (id_user, id_chat, pesan, date.today().strftime("%Y-%m-%d")))
+            id_inbox = cursor.lastrowid
+            sql = "INSERT INTO tb_kunjungan (nama, umur, jenis_kelamin, alamat, no_telepon, destinasi) VALUES " \
+                  "(%s, %s, %s, %s, %s, %s)"
+            cursor.execute(sql, (nama, umur, jenis_kelamin, alamat, no_telepon, destinasi))
+
+        connection.commit()
+
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO tb_outbox (id_inbox, respon) VALUES (%s, %s)"
+            cursor.execute(sql, (id_inbox, respon))
+            sql = "UPDATE tb_inbox SET tb_inbox.`status` = '1' WHERE tb_inbox.`id` = %s"
+            cursor.execute(sql, (id_inbox))
+
+        connection.commit()
+
+    except Exception as error:
+        print(error)
+        respon = "Terjadi kesalahan, silahkan coba lagi"
+
+    response = {
+        "fulfillmentText": respon
+    }
+
+    return jsonify(response)
 
 
 if __name__ == "__main__":
