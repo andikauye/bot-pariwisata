@@ -30,7 +30,7 @@ def root():
     elif intent == "destinasi":
         daftar_destinasi(data)
 
-    return jsonify(data)
+    return jsonify({"fulfillmentText": "Mohon ulangi lagi"})
 
 
 def daftar_nama(data):
@@ -60,11 +60,11 @@ def daftar_nama(data):
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
 
-    print("Sampai")
-
     response = {
         "fulfillmentText": respon
     }
+
+    print(response)
 
     return jsonify(response)
 
@@ -95,7 +95,7 @@ def daftar_umur(data):
     except Exception as error:
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
-    print("Sampai")
+
     response = {
         "fulfillmentText": respon
     }
@@ -129,7 +129,7 @@ def daftar_jenis_kelamin(data):
     except Exception as error:
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
-    print("Sampai")
+
     response = {
         "fulfillmentText": respon
     }
@@ -163,7 +163,7 @@ def daftar_alamat(data):
     except Exception as error:
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
-    print("Sampai")
+
     response = {
         "fulfillmentText": respon
     }
@@ -211,7 +211,7 @@ def daftar_no_telepon(data):
     except Exception as error:
         print(error)
         respon = "Terjadi kesalahan, silahkan coba lagi"
-    print("Sampai")
+
     response = {
         "fulfillmentText": respon
     }
