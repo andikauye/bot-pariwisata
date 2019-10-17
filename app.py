@@ -29,6 +29,8 @@ def root():
         return daftar_no_telepon(data)
     elif intent == "destinasi":
         return daftar_destinasi(data)
+    elif intent == "Riwayat":
+        return riwayat(data)
 
     return jsonify({"fulfillmentText": "Mohon ulangi lagi"})
 
@@ -242,6 +244,67 @@ def daftar_destinasi(data):
             cursor.execute(sql, (nama, umur, jenis_kelamin, alamat, no_telepon, destinasi))
 
         connection.commit()
+
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO tb_outbox (id_inbox, respon) VALUES (%s, %s)"
+            cursor.execute(sql, (id_inbox, respon))
+            sql = "UPDATE tb_inbox SET tb_inbox.`status` = '1' WHERE tb_inbox.`id` = %s"
+            cursor.execute(sql, (id_inbox))
+
+        connection.commit()
+
+    except Exception as error:
+        print(error)
+        respon = "Terjadi kesalahan, silahkan coba lagi"
+
+    response = {
+        "fulfillmentText": respon
+    }
+
+    return jsonify(response)
+
+
+def riwayat(data):
+    id_user = data['originalDetectIntentRequest']['payload']['data']['source']['userId']
+    id_chat = data['originalDetectIntentRequest']['payload']['data']['message']['id']
+    pesan = data['queryResult']['queryText']
+    id_inbox = ""
+
+    try:
+        result = None
+        respon = "Riwayat Kunjungan:\n"
+
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM tb_kunjungan ORDER BY tb_kunjungan.`id` DESC"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO tb_inbox (id_user, id_chat, pesan, tanggal) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (id_user, id_chat, pesan, date.today().strftime("%Y-%m-%d")))
+            id_inbox = cursor.lastrowid
+
+        connection.commit()
+
+        for index, kunjungan in enumerate(result):
+            jenis_kelamin = ""
+
+            if kunjungan['jenis_kelamin'] == '1':
+                jenis_kelamin = "Laki-laki"
+            elif kunjungan['jenis_kelamin'] == '2':
+                jenis_kelamin = "Perempuan"
+            else:
+                jenis_kelamin = kunjungan['jenis_kelamin']
+
+            respon += "{}. {}\nNama: {}\nUmur: {}\nJenis Kelamin: {}\nAlamat: {}\nNo. Telepon: {}\n\n".format(
+                index + 1,
+                kunjungan['destinasi'],
+                kunjungan['nama'],
+                kunjungan['umur'],
+                jenis_kelamin,
+                kunjungan['alamat'],
+                kunjungan['no_telepon']
+            )
 
         with connection.cursor() as cursor:
             sql = "INSERT INTO tb_outbox (id_inbox, respon) VALUES (%s, %s)"
